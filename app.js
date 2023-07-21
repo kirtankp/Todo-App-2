@@ -63,13 +63,17 @@ app.get('/user/todos', authenticateToken, (req, res) => {
 
     //userId holds the user token
     const userId = authHeader.split(' ')[1];
-    res.status(200).json(Todos);
-    // const todos = Todos.find(u => u.id === userId);
-    // if (todos) {
-    //     res.status(200).json(todos);
-    // } else {
-    //     res.status(404).send('userId not found');
-    // }
+    const todos = [];
+    for (let i = 0; i < Todos.length; i++) {
+        if(Todos[i].userId === userId) {
+            todos.push(Todos[i])
+        }        
+    }
+    if (todos) {
+        res.status(200).json(todos);
+    } else {
+        res.status(404).send('userId not found');
+    }
 })
 //add todo
 app.post('/user/todo', authenticateToken, (req, res) => {
