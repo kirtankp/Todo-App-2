@@ -1,11 +1,12 @@
 const express = require('express')
 const jwt = require('jsonwebtoken')
+const mongoose = require('mongoose')
+const User = require('./Models/Users')
 const port = 5001
 const app = express();
 app.use(express.json());
 
-let Users = [];
-let Todos = [];
+mongoose.connect('mongodb+srv://kirtankp:PracticeCluster@cluster0.s29hirs.mongodb.net/')
 
 const secretKey = "fbajs$0cg^&45$fhs"
 
@@ -35,27 +36,39 @@ const authenticateToken = (req, res, next) => {
 
 //routes
 //signup
-app.post('/user/signup', (req, res) => {
-    const user = req.body;
-    const exists = Users.find(a => a.username === user.username);
-    if (exists) {
-        res.status(403).json({ message: 'User already exists' });
-    } else {
-        Users.push(user);
-        const token = generateToken(user);
-        res.json({ message: 'User created successfully', token });
+app.post('/user/signup', async (req, res) => {
+    try {
+        const user = req.body;
+        if (await User.findOne(user)) {
+            res.json({ message: 'already signed up' })
+        } else {
+            User(user).save()
+            const token = generateToken(user);
+            res.json({ msg: 'signup successfully', user, token })
+        }
+    } catch (error) {
+        res.json({ message: 'error' })
     }
 })
 //login
-app.post('/user/login', (req, res) => {
+app.post('/user/login', async (req, res) => {
     const { username, password } = req.headers;
-    const user = Users.find(u => u.username === username && u.password === password);
-    if (user) {
-        const token = generateToken(user);
-        res.json({ message: 'Logged in successfully', token });
-    } else {
-        res.status(403).json({ message: 'User authentication failed' });
+    const user = await User.findOne({
+        username: username,
+        password: password
+    });
+
+    try {
+        if (user) {
+            const token = generateToken(user);
+            res.json({ msg: 'logged in successfully', user, token })
+        } else {
+            res.json({ message: 'user authentication failed' })
+        }
+    } catch (error) {
+        res.json({ message: 'error' })
     }
+
 })
 //fetch all todos
 app.get('/user/todos', authenticateToken, (req, res) => {
@@ -65,9 +78,9 @@ app.get('/user/todos', authenticateToken, (req, res) => {
     const userId = authHeader.split(' ')[1];
     const todos = [];
     for (let i = 0; i < Todos.length; i++) {
-        if(Todos[i].userId === userId) {
+        if (Todos[i].userId === userId) {
             todos.push(Todos[i])
-        }        
+        }
     }
     if (todos) {
         res.status(200).json(todos);
