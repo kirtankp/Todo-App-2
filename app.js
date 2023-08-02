@@ -2,6 +2,7 @@ const express = require('express')
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 const User = require('./Models/Users')
+const Todo = require('./Models/Todos')
 const port = 5001
 const app = express();
 app.use(express.json());
@@ -71,40 +72,32 @@ app.post('/user/login', async (req, res) => {
 
 })
 //fetch all todos
-app.get('/user/todos', authenticateToken, (req, res) => {
-    const authHeader = req.headers.authorization;
+app.get('/user/todos', authenticateToken,async (req, res) => {
+    const userId = req.user.username;
 
-    //userId holds the user token
-    const userId = authHeader.split(' ')[1];
-    const todos = [];
-    for (let i = 0; i < Todos.length; i++) {
-        if (Todos[i].userId === userId) {
-            todos.push(Todos[i])
-        }
-    }
-    if (todos) {
+    try {
+        const todos = await Todo.find({ userId });
         res.status(200).json(todos);
-    } else {
-        res.status(404).send('userId not found');
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching todos', error });
     }
 })
 //add todo
-app.post('/user/todo', authenticateToken, (req, res) => {
-    const authHeader = req.headers.authorization;
+app.post('/user/todo', authenticateToken, async (req, res) => {
+    const userId = req.user.username;
 
-    //userId holds the user token
-    const userId = authHeader.split(' ')[1];
-
-    const { title, description, completed } = req.body;
-
-    const newTodo = {
-        userId,
-        title,
-        description,
-        completed,
-    };
-    Todos.push(newTodo);
-    res.status(201).json(newTodo);
+    try {
+        const { title, description } = req.body;
+        const newTodo = new Todo({
+            userId,
+            title,
+            description
+        });
+        await newTodo.save();
+        res.status(201).json({ msg: 'Todo Added', newTodo });
+    } catch (error) {
+        res.status(500).json({ message: 'Error adding todo', error });
+    }
 })
 //edit todo
 app.put('/user/todo/:id', (req, res) => {
