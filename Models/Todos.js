@@ -5,6 +5,10 @@ const todoSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    todoId: {
+        type: Number,
+        required: true
+    },
     title: {
         type: String,
         required: true
