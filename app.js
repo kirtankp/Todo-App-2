@@ -72,7 +72,7 @@ app.post('/user/login', async (req, res) => {
 
 })
 //fetch all todos
-app.get('/user/todos', authenticateToken,async (req, res) => {
+app.get('/user/todos', authenticateToken, async (req, res) => {
     const userId = req.user.username;
 
     try {
@@ -88,8 +88,10 @@ app.post('/user/todo', authenticateToken, async (req, res) => {
 
     try {
         const { title, description } = req.body;
+        const todoId = Math.floor(Math.random() * 1000000) // unique random id
         const newTodo = new Todo({
             userId,
+            todoId,
             title,
             description
         });
@@ -100,12 +102,42 @@ app.post('/user/todo', authenticateToken, async (req, res) => {
     }
 })
 //edit todo
-app.put('/user/todo/:id', (req, res) => {
+app.put('/user/todo/:id', async (req, res) => {
+    const id = req.params.id;
 
+    try {
+        const { title, description } = req.body;
+
+        const updatedTodo = await Todo.findByIdAndUpdate(
+            id,
+            { title, description },
+            { new: true } // This option returns the updated todo after the update is applied
+        );
+
+        if (updatedTodo) {
+            res.json({ msg: 'Todo updated successfully', updatedTodo });
+        } else {
+            res.status(404).send('Todo not found');
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating todo', error });
+    }
 })
 //delete todo
-app.delete('/user/todo/:id', (req, res) => {
+app.delete('/user/todo/:id', async (req, res) => {
+    const id = req.params.id;
 
+    try {
+        const deletedTodo = await Todo.findByIdAndDelete(id);
+
+        if (deletedTodo) {
+            res.json({ msg: 'Todo deleted successfully', deletedTodo });
+        } else {
+            res.status(404).send('Todo not found');
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting todo', error });
+    }
 })
 
 app.listen(port, () => {
