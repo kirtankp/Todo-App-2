@@ -1,3 +1,4 @@
+import '../app/globals.css'
 import React, { ReactNode } from 'react';
 
 interface LayoutProps {
