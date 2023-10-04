@@ -15,15 +15,36 @@ const Signup: React.FC = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleformData = async (formData: object) => {
+    try {
+      const response = await fetch('localhost:5001/user/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ formData }),
+      });
+
+      if (response.ok) {
+        console.log('Form data saved successfully');
+      } else {
+        console.error('Failed to save form data');
+      }
+    } catch (error) {
+      console.error('Error saving form data', error);
+    }
+  };
+
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Handle signup logic here (e.g., send data to the server)
+    handleformData(formData)
     console.log(formData)
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      {/* // <form> */}
       <h2 className="text-2xl mb-4">Sign Up</h2>
       <div className="mb-4">
         <input

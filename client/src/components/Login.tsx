@@ -22,7 +22,6 @@ const Login: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      {/* <form> */}
       <h2 className="text-2xl mb-4">Log In</h2>
       <div className="mb-4">
         <input
