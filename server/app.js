@@ -10,7 +10,8 @@ const cors = require('cors')
 app.use(cors())
 app.use(express.json());
 
-mongoose.connect('mongodb+srv://kirtankp:PracticeCluster@cluster0.s29hirs.mongodb.net/')
+mongoose.connect(`mongodb+srv://kirtankp:PracticeCluster@cluster0.s29hirs.mongodb.net/`)
+// mongoose.connect(`mongodb+srv://${process.env.userName}:${process.env.id}@cluster0.s29hirs.mongodb.net/`)
 
 const secretKey = "fbajs$0cg^&45$fhs"
 
