@@ -16,7 +16,7 @@ mongoose.connect(`mongodb+srv://kirtankp:PracticeCluster@cluster0.s29hirs.mongod
 const secretKey = "fbajs$0cg^&45$fhs"
 
 const generateToken = (user) => {
-    const payload = { username: user.username, password: user.password };
+    const payload = { email: user.email, password: user.password };
     return jwt.sign(payload, secretKey, { expiresIn: '1h' });
 }
 
@@ -57,23 +57,17 @@ app.post('/user/signup', async (req, res) => {
 })
 //login
 app.post('/user/login', async (req, res) => {
-    const { username, password } = req.headers;
-    const user = await User.findOne({
-        username: username,
-        password: password
-    });
-
     try {
-        if (user) {
+        const user = req.body;
+        if (await User.findOne(user)) {
             const token = generateToken(user);
             res.json({ msg: 'logged in successfully', user, token })
         } else {
-            res.json({ message: 'user authentication failed' })
+            res.json({ message: 'user authentication failed', user })
         }
     } catch (error) {
         res.json({ message: 'error' })
     }
-
 })
 //fetch all todos
 app.get('/user/todos', authenticateToken, async (req, res) => {
