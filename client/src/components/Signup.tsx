@@ -17,7 +17,7 @@ const Signup: React.FC = () => {
 
   const handleformData = async (formData: object) => {
     try {
-      const response = await fetch('localhost:5001/user/signup', {
+      const response = await fetch('http://localhost:5001/user/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,8 +82,13 @@ const Signup: React.FC = () => {
       >
         Sign Up
       </button>
-      <Link href="/login" className="text-blue-600 rounded  hover:text-red-500 md:p-0 ">
-        Already Signed? Login
+      <div className='mb-3'>
+        <Link href="/login" className="text-blue-600 rounded  hover:text-red-500 md:p-0 ">
+          Already have an account? Login here
+        </Link>
+      </div>
+      <Link href="/" className="text-blue-600 rounded  hover:text-red-500 md:p-0 ">
+        Back to Dashboard
       </Link>
     </form>
   );
