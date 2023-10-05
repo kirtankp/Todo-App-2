@@ -5,6 +5,9 @@ const User = require('./Models/Users')
 const Todo = require('./Models/Todos')
 const port = 5001
 const app = express();
+const cors = require('cors')
+
+app.use(cors())
 app.use(express.json());
 
 mongoose.connect('mongodb+srv://kirtankp:PracticeCluster@cluster0.s29hirs.mongodb.net/')

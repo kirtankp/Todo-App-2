@@ -14,9 +14,30 @@ const Login: React.FC = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleformData = async (formData: object) => {
+    try {
+      const response = await fetch('http://localhost:5001/user/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ formData }),
+      });
+
+      if (response.ok) {
+        console.log('Form data saved successfully');
+      } else {
+        console.error('Failed to save form data');
+      }
+    } catch (error) {
+      console.error('Error saving form data', error);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle login logic here (e.g., send data to the server)
+    handleformData(formData)
     console.log(formData)
   };
 
@@ -49,8 +70,13 @@ const Login: React.FC = () => {
       >
         Log In
       </button>
-      <Link href="/signup" className="text-blue-600 rounded  hover:text-red-500 md:p-0 ">
-        Already Signed? Login
+      <div className='mb-3'>
+        <Link href="/signup" className="mb-4 text-blue-600 rounded  hover:text-red-500 md:p-0 ">
+          Don't have an account? Signup here
+        </Link>
+      </div>
+      <Link href="/" className="text-blue-600 rounded  hover:text-red-500 md:p-0 ">
+        Back to Dashboard
       </Link>
     </form>
   );
