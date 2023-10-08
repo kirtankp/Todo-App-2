@@ -6,14 +6,14 @@ const Todo = require('./Models/Todos')
 const port = 5001
 const app = express();
 const cors = require('cors')
+require('dotenv').config();
 
 app.use(cors())
 app.use(express.json());
 
-mongoose.connect(`mongodb+srv://kirtankp:PracticeCluster@cluster0.s29hirs.mongodb.net/`)
-// mongoose.connect(`mongodb+srv://${process.env.userName}:${process.env.id}@cluster0.s29hirs.mongodb.net/`)
+mongoose.connect(process.env.MONGO_URL)
 
-const secretKey = "fbajs$0cg^&45$fhs"
+const secretKey = process.env.SECRET
 
 const generateToken = (user) => {
     const payload = { email: user.email, password: user.password };
