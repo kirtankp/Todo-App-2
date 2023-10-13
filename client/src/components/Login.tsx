@@ -76,7 +76,7 @@ const Login: React.FC = () => {
         </Link>
       </div>
       <Link href="/" className="text-blue-600 rounded  hover:text-red-500 md:p-0 ">
-        Back to Dashboard
+        Home
       </Link>
     </form>
   );

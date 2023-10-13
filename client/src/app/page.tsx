@@ -1,7 +1,7 @@
-import Dashboard from "@/components/Dashboard"
+import Home from "@/components/Home"
 
-export default function Home() {
+export default function App() {
   return (
-    <Dashboard />
+    <Home />
   )
 }
