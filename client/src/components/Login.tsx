@@ -1,9 +1,12 @@
 "use client"
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
+import axios from 'axios';
 import Link from 'next/link';
 
 const Login: React.FC = () => {
+  const router = useRouter()
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -16,21 +19,11 @@ const Login: React.FC = () => {
 
   const handleformData = async (formData: object) => {
     try {
-      const response = await fetch('http://localhost:5001/user/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ...formData }),
-      });
-
-      if (response.ok) {
-        console.log('Form data saved successfully');
-      } else {
-        console.error('Failed to save form data');
-      }
-    } catch (error) {
-      console.error('Error saving form data', error);
+      const response = await axios.post("http://localhost:5001/user/login", formData);
+      console.log("Login success", response.data);
+      router.push("/dashboard");
+    } catch (error: any) {
+      console.log("Login failed", error.message);
     }
   };
 
