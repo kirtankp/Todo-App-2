@@ -20,7 +20,8 @@ const Login: React.FC = () => {
   const handleformData = async (formData: object) => {
     try {
       const response = await axios.post("http://localhost:5001/user/login", formData);
-      if (response.data['token']) {
+      if (response.data['user']) {
+        localStorage.setItem('token', response.data['user'])
         console.log("Login success", response.data);
         router.push("/dashboard");
       } else {

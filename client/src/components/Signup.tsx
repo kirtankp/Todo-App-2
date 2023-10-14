@@ -23,7 +23,7 @@ const Signup: React.FC = () => {
       const response = await axios.post("http://localhost:5001/user/signup", formData);
       if (response.data["token"]) {        
         console.log("Signup successfully", response.data);
-        router.push("/dashboard");
+        router.push("/login");
       } else {
         alert("already signed up")
         console.log("already signed up", response.data);
