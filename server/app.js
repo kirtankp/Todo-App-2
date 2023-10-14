@@ -61,9 +61,9 @@ app.post('/user/login', async (req, res) => {
         const user = req.body;
         if (await User.findOne(user)) {
             const token = generateToken(user);
-            res.json({ msg: 'logged in successfully', user, token })
+            res.status(200).json({msg: 'logged in successfully', user: token })
         } else {
-            res.json({ message: 'user authentication failed', user })
+            res.status(401).json({msg: 'user authentication failed', user: false })
         }
     } catch (error) {
         res.json({ message: 'error' })
