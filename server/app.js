@@ -61,9 +61,9 @@ app.post('/user/login', async (req, res) => {
         const user = req.body;
         if (await User.findOne(user)) {
             const token = generateToken(user);
-            res.status(200).json({msg: 'logged in successfully', user: token })
+            res.status(200).json({ msg: 'logged in successfully', user: token })
         } else {
-            res.status(401).json({msg: 'user authentication failed', user: false })
+            res.status(401).json({ msg: 'user authentication failed', user: false })
         }
     } catch (error) {
         res.json({ message: 'error' })
@@ -135,6 +135,20 @@ app.delete('/user/todo/:id', async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({ message: 'Error deleting todo', error });
+    }
+})
+
+
+app.get('/user/data', async (req, res) => {
+    const token = req.headers['x-access-token']
+
+    try {
+        const decoded = jwt.verify(token, secretKey)
+        const email = decoded.email
+        const user = await User.findOne({ email: email })
+        res.json({ status: 'ok', username: user.username })
+    } catch (error) {
+        res.json({ status: 'error', error: 'invalid token' })
     }
 })
 
