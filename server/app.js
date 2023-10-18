@@ -21,16 +21,14 @@ const generateToken = (user) => {
 }
 
 const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers.authorization;
+    const token = req.headers['x-access-token']
 
-    if (authHeader) {
-        const token = authHeader.split(' ')[1];
-
+    if (token) {
         jwt.verify(token, secretKey, (err, user) => {
             if (err) {
                 return res.sendStatus(403);
             }
-
+            console.log(user)
             req.user = user;
             next();
         });
@@ -71,10 +69,11 @@ app.post('/user/login', async (req, res) => {
 })
 //fetch all todos
 app.get('/user/todos', authenticateToken, async (req, res) => {
-    const userId = req.user.username;
-
+    const userId = req.user.email;
+    console.log(userId)
     try {
         const todos = await Todo.find({ userId });
+        console.log(todos)
         res.status(200).json(todos);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching todos', error });
